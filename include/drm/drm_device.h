@@ -312,6 +312,18 @@ struct drm_device {
 	 */
 	struct drm_fb_helper *fb_helper;
 
+	/**
+	 * @debugfs_mutex:
+	 * Protects debugfs_list access.
+	 */
+	struct mutex debugfs_mutex;
+
+	/** @debugfs_list:
+	 * List of debugfs files to add.
+	 * Files are added during drm_dev_register().
+	 */
+	struct list_head debugfs_list;
+
 	/* Everything below here is for legacy driver, never use! */
 	/* private: */
 #if IS_ENABLED(CONFIG_DRM_LEGACY)

@@ -34,6 +34,44 @@
 
 #include <linux/types.h>
 #include <linux/seq_file.h>
+
+struct drm_device;
+
+typedef int (*drm_simple_show_t)(struct seq_file *, void *);
+
+/**
+ * struct drm_simple_info - debugfs file entry
+ *
+ * This struct represents a debugfs file to be created.
+ */
+struct drm_simple_info {
+	const char *name;
+	drm_simple_show_t show_fn;
+	u32 driver_features;
+	void *data;
+};
+
+/**
+ * struct drm_simple_info_entry - debugfs list entry
+ *
+ * This struct is used in tracking requests for new debugfs files
+ * to be created.
+ */
+struct drm_simple_info_entry {
+	struct drm_device *dev;
+	struct drm_simple_info file;
+	struct list_head list;
+};
+
+void drm_debugfs_add_file(struct drm_device *dev,
+			  const char *name,
+			  drm_simple_show_t show_fn,
+			  void *data);
+
+void drm_debugfs_add_files(struct drm_device *dev,
+			   const struct drm_simple_info *files,
+			   int count);
+
 /**
  * struct drm_info_list - debugfs info list entry
  *

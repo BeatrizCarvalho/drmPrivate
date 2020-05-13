@@ -145,9 +145,10 @@ static const struct drm_info_list drm_debugfs_list[] = {
 
 static int drm_debugfs_open(struct inode *inode, struct file *file)
 {
-	struct drm_info_node *node = inode->i_private;
+	struct drm_simple_info_entry *entry = inode->i_private;
+	struct drm_simple_info *node = &entry->file;
 
-	return single_open(file, node->info_ent->show, node);
+	return single_open(file, node->show_fn, entry);
 }
 
 
@@ -159,6 +160,25 @@ static const struct file_operations drm_debugfs_fops = {
 	.release = single_release,
 };
 
+/**
+ * drm_debugfs_create_file - create DRM debugfs file.
+ * @dev: drm_device that the file belongs to
+ *
+ * Create a DRM debugfs file from the list of files to be created
+ * from dev->debugfs_list.
+ */
+static void drm_debugfs_create_file(struct drm_minor *minor)
+{
+	struct drm_device *dev = minor->dev;
+	struct drm_simple_info_entry *entry;
+
+	list_for_each_entry(entry, &dev->debugfs_list, list) {
+		debugfs_create_file(entry->file.name,
+				    S_IFREG | S_IRUGO, minor->debugfs_root,
+				    entry,
+				    &drm_debugfs_fops);
+	}
+}
 
 /**
  * drm_debugfs_create_files - Initialize a given set of debugfs files for DRM
@@ -213,8 +233,7 @@ int drm_debugfs_init(struct drm_minor *minor, int minor_id,
 	sprintf(name, "%d", minor_id);
 	minor->debugfs_root = debugfs_create_dir(name, root);
 
-	drm_debugfs_create_files(drm_debugfs_list, DRM_DEBUGFS_ENTRIES,
-				 minor->debugfs_root, minor);
+	drm_debugfs_create_file(minor);
 
 	if (drm_drv_uses_atomic_modeset(dev)) {
 		drm_atomic_debugfs_init(minor);
@@ -470,5 +489,37 @@ void drm_debugfs_crtc_remove(struct drm_crtc *crtc)
 	debugfs_remove_recursive(crtc->debugfs_entry);
 	crtc->debugfs_entry = NULL;
 }
+
+void drm_debugfs_add_file(struct drm_device *dev, const char *name,
+			  drm_simple_show_t show_fn, void *data)
+{
+	struct drm_simple_info_entry *entry =
+		kzalloc(sizeof(*entry), GFP_KERNEL);
+
+	if (!entry)
+		return;
+
+	entry->file.name = name;
+	entry->file.show_fn = show_fn;
+	entry->file.data = data;
+	entry->dev = dev;
+
+	mutex_lock(&dev->debugfs_mutex);
+	list_add(&entry->list, &dev->debugfs_list);
+	mutex_unlock(&dev->debugfs_mutex);
+}
+EXPORT_SYMBOL(drm_debugfs_add_file);
+
+void drm_debugfs_add_files(struct drm_device *dev,
+			   const struct drm_simple_info *files, int count)
+{
+	int i;
+
+	for (i = 0; i < count; i++) {
+		drm_debugfs_add_file(dev, files[i].name, files[i].show_fn,
+				     files[i].data);
+	}
+}
+EXPORT_SYMBOL(drm_debugfs_add_files);
 
 #endif /* CONFIG_DEBUG_FS */
