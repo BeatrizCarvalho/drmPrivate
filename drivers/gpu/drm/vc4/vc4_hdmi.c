@@ -105,12 +105,18 @@ static bool vc4_hdmi_mode_needs_scrambling(const struct drm_display_mode *mode)
 
 static int vc4_hdmi_debugfs_regs(struct seq_file *m, void *unused)
 {
-	struct drm_info_node *node = (struct drm_info_node *)m->private;
-	struct vc4_hdmi *vc4_hdmi = node->info_ent->data;
+	//struct drm_info_node *node = (struct drm_info_node *)m->private;
+	//struct vc4_hdmi *vc4_hdmi = node->info_ent->data;
+	
+	struct drm_simple_info_entry *entry = m->private;
+	struct drm_device *dev = entry->dev;
+	struct vc4_dev *vc4 = to_vc4_dev(dev);
+ 	struct vc4_hdmi *hdmi = vc4->hdmi;
+
 	struct drm_printer p = drm_seq_file_printer(m);
 
-	drm_print_regset32(&p, &vc4_hdmi->hdmi_regset);
-	drm_print_regset32(&p, &vc4_hdmi->hd_regset);
+	//drm_print_regset32(&p, &vc4_hdmi->hdmi_regset);
+	//drm_print_regset32(&p, &vc4_hdmi->hd_regset);
 
 	return 0;
 }
