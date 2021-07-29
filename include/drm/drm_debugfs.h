@@ -44,6 +44,7 @@ typedef int (*drm_simple_show_t)(struct seq_file *, void *);
  *
  * This struct represents a debugfs file to be created.
  */
+
 struct drm_simple_info {
 	const char *name;
 	drm_simple_show_t show_fn;
@@ -57,6 +58,7 @@ struct drm_simple_info {
  * This struct is used in tracking requests for new debugfs files
  * to be created.
  */
+
 struct drm_simple_info_entry {
 	struct drm_device *dev;
 	struct drm_simple_info file;

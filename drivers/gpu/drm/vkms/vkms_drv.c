@@ -95,6 +95,8 @@ static int vkms_config_show(struct seq_file *m, void *data)
 	struct drm_device *dev = node->minor->dev;
 	struct vkms_device *vkmsdev = drm_device_to_vkms_device(dev);
 
+	printk("it's my code Beatriz Carvalho - vkms_config_show\n");
+
 	seq_printf(m, "writeback=%d\n", vkmsdev->config->writeback);
 	seq_printf(m, "cursor=%d\n", vkmsdev->config->cursor);
 	seq_printf(m, "overlay=%d\n", vkmsdev->config->overlay);
@@ -108,6 +110,9 @@ static const struct drm_info_list vkms_config_debugfs_list[] = {
 
 static void vkms_config_debugfs_init(struct drm_minor *minor)
 {
+	//add Beatriz Carvalho
+	printk("it's my code Beatriz Carvalho - vkms_config_debug_init\n");
+        //
 	drm_debugfs_create_files(vkms_config_debugfs_list, ARRAY_SIZE(vkms_config_debugfs_list),
 				 minor->debugfs_root, minor);
 }
@@ -219,6 +224,11 @@ out_unregister:
 static int __init vkms_init(void)
 {
 	struct vkms_config *config;
+
+	//add Beatriz Carvalho
+        printk("it's my code Beatriz Carvalho - vkms_init\n");
+        //BUG_ON(true);
+        //
 
 	config = kmalloc(sizeof(*config), GFP_KERNEL);
 	if (!config)

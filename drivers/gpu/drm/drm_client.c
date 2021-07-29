@@ -479,8 +479,10 @@ EXPORT_SYMBOL(drm_client_framebuffer_flush);
 #ifdef CONFIG_DEBUG_FS
 static int drm_client_debugfs_internal_clients(struct seq_file *m, void *data)
 {
-	struct drm_simple_info_entry *entry = m->private;
-	struct drm_device *dev = entry->dev;
+	//struct drm_simple_info_entry *entry = m->private;
+	//struct drm_device *dev = entry->dev;
+	struct drm_info_node *node = m->private;
+	struct drm_device *dev = node->minor->dev;
 	struct drm_printer p = drm_seq_file_printer(m);
 	struct drm_client_dev *client;
 
@@ -492,13 +494,17 @@ static int drm_client_debugfs_internal_clients(struct seq_file *m, void *data)
 	return 0;
 }
 
-static const struct drm_simple_info drm_client_debugfs_list[] = {
+//static const struct drm_simple_info drm_client_debugfs_list[] = {
+static const struct drm_info_list drm_client_debugfs_list[] = {
 	{ "internal_clients", drm_client_debugfs_internal_clients, 0 },
 };
 
 void drm_client_debugfs_init(struct drm_minor *minor)
 {
-	drm_debugfs_add_files(minor->dev, drm_client_debugfs_list,
-			      ARRAY_SIZE(drm_client_debugfs_list));
+	//drm_debugfs_add_files(minor->dev, drm_client_debugfs_list,
+	//		      ARRAY_SIZE(drm_client_debugfs_list));
+	drm_debugfs_create_files(drm_client_debugfs_list,
+				 ARRAY_SIZE(drm_client_debugfs_list),
+				 minor->debugfs_root, minor);
 }
 #endif
