@@ -201,7 +201,7 @@ static void drm_debugfs_create_added_files(struct drm_minor *minor)
 	struct drm_simple_info_entry *entry;
 
 	//add Beatriz Carvalho
-	printk("it's Oops code Beatriz Carvalho - drm_debug_create_file\n");
+	printk("it's Oops code Beatriz Carvalho - drm_debug_create_added_file\n");
         //
 	list_for_each_entry(entry, &dev->debugfs_list, list) {
 		printk("it's Oops code Beatriz Carvalho - LIST_FOR_EACH_ENTRY\n");
@@ -211,7 +211,7 @@ static void drm_debugfs_create_added_files(struct drm_minor *minor)
 				    &drm_debugfs_fops_copy);
 	}
 }
-//EXPORT_SYMBOL(drm_debugfs_create_added_files);
+
 /**
  * drm_debugfs_create_files - Initialize a given set of debugfs files for DRM
  * 			minor
