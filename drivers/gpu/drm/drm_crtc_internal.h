@@ -229,6 +229,7 @@ int drm_mode_dirtyfb_ioctl(struct drm_device *dev,
 #ifdef CONFIG_DEBUG_FS
 struct drm_minor;
 void drm_atomic_debugfs_init(struct drm_minor *minor);
+void drm_atomic_debugfs_simple_init(struct drm_minor *minor);
 #endif
 
 int __drm_atomic_helper_disable_plane(struct drm_plane *plane,

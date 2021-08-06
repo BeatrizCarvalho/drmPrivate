@@ -1203,13 +1203,42 @@ static const struct drm_info_list drm_framebuffer_debugfs_list[] = {
 //static const struct drm_simple_info drm_framebuffer_debugfs_list[] = {
 	{ "framebuffer", drm_framebuffer_info, 0 },
 };
+//Wambui's patch
+static int drm_framebuffer_simple_info(struct seq_file *m, void *data)
+{
+        struct drm_simple_info_entry *entry = m->private;
+        struct drm_device *dev = entry->dev;
+        struct drm_printer p = drm_seq_file_printer(m);
+        struct drm_framebuffer *fb;
+
+        printk("it's Oops code Beatriz Carvalho - drm_framebuffer_simple_info\n");                             
+        mutex_lock(&dev->mode_config.fb_lock);
+        drm_for_each_fb(fb, dev) {
+                drm_printf(&p, "framebuffer[%u]:\n", fb->base.id);
+                drm_framebuffer_print_info(&p, 1, fb);
+        }
+        mutex_unlock(&dev->mode_config.fb_lock);
+
+        return 0;
+}
+
+static const struct drm_simple_info drm_framebuffer_debugfs_simple_list[] = {
+
+        { "framebuffer_simple", drm_framebuffer_simple_info, 0 },                            
+};
+//
 
 void drm_framebuffer_debugfs_init(struct drm_minor *minor)
 {
 	//drm_debugfs_add_files(minor->dev, drm_framebuffer_debugfs_list,
 	//		      ARRAY_SIZE(drm_framebuffer_debugfs_list));
+	//add Beatriz Carvalho                                                                      
+        printk("it's Oops code Beatriz Carvalho - drm_framebuffer_debugfs_init\n");                             
+        // 
 	drm_debugfs_create_files(drm_framebuffer_debugfs_list,
 				 ARRAY_SIZE(drm_framebuffer_debugfs_list),
 				 minor->debugfs_root, minor);
+	drm_debugfs_add_files(minor->dev, drm_framebuffer_debugfs_simple_list,
+			      ARRAY_SIZE(drm_framebuffer_debugfs_simple_list));
 }
 #endif

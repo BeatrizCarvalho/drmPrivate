@@ -174,7 +174,7 @@ static int drm_debugfs_open_copy(struct inode *inode, struct file *file)
         struct drm_simple_info *node = &entry->file;
 
         //add Beatriz Carvalho
-        printk("it's Oops code Beatriz Carvalho - drm_debugfs_open\n");
+        printk("it's Oops code Beatriz Carvalho - drm_debugfs_open copy\n");
         return single_open(file, node->show_fn, entry);
 
 }
@@ -203,8 +203,13 @@ static void drm_debugfs_create_added_files(struct drm_minor *minor)
 	//add Beatriz Carvalho
 	printk("it's Oops code Beatriz Carvalho - drm_debug_create_added_file\n");
         //
+	printk("create_added_file drm_device offset is %ld\n", offsetof(struct drm_device, dev)); 
+	printk("create_added_file drm_simple_info_entry offset is %ld\n", offsetof(struct drm_simple_info_entry, file));
+	printk("create_added_file entry->file.name offfset is %ld\n", offsetof(struct drm_simple_info, name));
+	//printk("create_added_file entry->file.name is %s\n", entry->file.name);
 	list_for_each_entry(entry, &dev->debugfs_list, list) {
 		printk("it's Oops code Beatriz Carvalho - LIST_FOR_EACH_ENTRY\n");
+		printk("create_added_file entry->file.name is %s\n", entry->file.name);
 		debugfs_create_file(entry->file.name,
 				    S_IFREG | S_IRUGO, minor->debugfs_root,
 				    entry,
@@ -231,7 +236,7 @@ void drm_debugfs_create_files(const struct drm_info_list *files, int count,
 	struct drm_info_node *tmp;
 	int i;
 
-        printk("it's Oops code Beatriz Carvalho - drm_debug_create_files\n");
+        printk("it's Oops code Beatriz Carvalho - drm_debugfs_create_files\n");
 	for (i = 0; i < count; i++) {
 		u32 features = files[i].driver_features;
 
@@ -266,24 +271,32 @@ int drm_debugfs_init(struct drm_minor *minor, int minor_id,
 	sprintf(name, "%d", minor_id);
 	minor->debugfs_root = debugfs_create_dir(name, root);
 	//add Beatriz Carvalho
-        printk("it's Oops code Beatriz Carvalho - drm_debug_init\n");
-	drm_debugfs_create_added_files(minor);
+        printk("it's Oops code Beatriz Carvalho - drm_debugfs_init\n");
 	drm_debugfs_create_files(drm_debugfs_list, DRM_DEBUGFS_ENTRIES,
 				 minor->debugfs_root, minor);
 	//
-	if (drm_drv_uses_atomic_modeset(dev)) {
+        if (drm_drv_uses_atomic_modeset(dev)) {
+		printk("it's Oops code Beatriz Carvalho - drm_atomic_debugfs_init\n");
 		drm_atomic_debugfs_init(minor);
 	}
 
 	if (drm_core_check_feature(dev, DRIVER_MODESET)) {
 		drm_framebuffer_debugfs_init(minor);
+		printk("it's Oops code Beatriz Carvalho - drm_framebuffer_debugfs_init\n");
+		printk("it's Oops code Beatriz Carvalho - drm_client_debugfs_init\n");
 
 		drm_client_debugfs_init(minor);
 	}
 
 	if (dev->driver->debugfs_init)
 		dev->driver->debugfs_init(minor);
+		printk("it's Oops code Beatriz Carvalho - drm_atomic_debugfs_init\n");
 
+	
+	drm_debugfs_create_added_files(minor);
+	/*if (drm_drv_uses_atomic_modeset(dev)) {
+                drm_atomic_debugfs_simple_init(minor);
+        }*/
 	return 0;
 }
 
@@ -532,6 +545,7 @@ void drm_debugfs_add_file(struct drm_device *dev, const char *name,
 	struct drm_simple_info_entry *entry =
 		kzalloc(sizeof(*entry), GFP_KERNEL);
 
+	printk("it's Oops code Beatriz Carvalho - drm_debugfs_add_file\n");
 	if (!entry)
 		return;
 
@@ -551,6 +565,7 @@ void drm_debugfs_add_files(struct drm_device *dev,
 {
 	int i;
 
+	printk("it's Oops code Beatriz Carvalho - drm_debugfs_add_files\n");
 	for (i = 0; i < count; i++) {
 		drm_debugfs_add_file(dev, files[i].name, files[i].show_fn,
 				     files[i].data);

@@ -1719,4 +1719,27 @@ void drm_atomic_debugfs_init(struct drm_minor *minor)
 				 ARRAY_SIZE(drm_atomic_debugfs_list),
 				 minor->debugfs_root, minor);
 }
+//Beatriz Carvalho
+static int drm_state_simple_info(struct seq_file *m, void *data)
+{
+        struct drm_simple_info_entry *entry = m->private;
+        struct drm_device *dev = entry->dev;
+        struct drm_printer p = drm_seq_file_printer(m);
+
+        __drm_state_dump(dev, &p, true);
+
+        return 0;
+}
+
+/* any use in debugfs files to dump individual planes/crtc/etc? */                                  
+static const struct drm_simple_info drm_atomic_debugfs_simple_list[] = {
+        {"state_simple_info", drm_state_simple_info, 0},
+};
+
+void drm_atomic_debugfs_simple_init(struct drm_minor *minor)
+{
+        drm_debugfs_add_files(minor->dev, drm_atomic_debugfs_simple_list,
+                              ARRAY_SIZE(drm_atomic_debugfs_simple_list));
+}
+
 #endif
